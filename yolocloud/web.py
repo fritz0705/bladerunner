@@ -144,7 +144,7 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
             if not token.regenerates:
                 db.delete(token)
         elif self.require_token:
-            self.report_403("Engine creation not possible without token")
+            return self.report_403("Engine creation not possible without token")
         if not vm.libvirt_url:
             vm.libvirt_url = self._pick_libvirt_host()
         try:
