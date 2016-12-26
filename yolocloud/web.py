@@ -12,7 +12,7 @@ import yolocloud.database as database
 import yolocloud.virt as virt
 
 class Jinja2Mixin(object):
-    def __init__(self, loader=None):
+    def __init__(self, *args, loader=None, **kwargs):
         if loader is None:
             loader = jinja2.PackageLoader("yolocloud", "views")
         self._jinja2_env = jinja2.Environment(loader=loader)
@@ -39,7 +39,7 @@ class Jinja2Mixin(object):
         return wrapper
 
 class DatabaseMixin(object):
-    def __init__(self, engine="sqlite:///yolocloud.db"):
+    def __init__(self, *args, engine="sqlite:///yolocloud.db", **kwargs):
         import sqlalchemy
         import sqlalchemy.orm
         if isinstance(engine, str):
@@ -58,7 +58,7 @@ class DatabaseMixin(object):
         return wrapper
 
 class CeleryMixin(object):
-    def __init__(self, celery_app=None):
+    def __init__(self, *args, celery_app=None, **kwargs):
         if celery_app is None:
             import celery
             celery_app = celery.Celery("yolocloud", broker="pyamqp://")
@@ -84,7 +84,7 @@ class CeleryMixin(object):
 
 class BaseApplication(bottle.Bottle):
     def __init__(self, *args, **kwargs):
-        bottle.Bottle.__init__(self, *args, **kwargs)
+        bottle.Bottle.__init__(self)
 
     def mount(self, prefix, app, **options):
         if isinstance(app, bottle.Bottle):
@@ -112,12 +112,13 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
 
     require_token = False
 
-    def __init__(self, *args, vm_hosts=None, **kwargs):
+    def __init__(self, *args, vm_hosts=None, require_token=False, **kwargs):
         BaseApplication.__init__(self, *args, **kwargs)
         Jinja2Mixin.__init__(self, loader=jinja2.PackageLoader("yolocloud", "views/vm"))
         DatabaseMixin.__init__(self, *args, **kwargs)
         CeleryMixin.__init__(self, *args, **kwargs)
         self.vm_hosts = vm_hosts or ["qemu:///system"]
+        self.require_token = require_token
         self.route("/<uuid>", "GET", self.show_vm)
         self.route("/<uuid>", "POST", self.update_vm)
         self.route("/<uuid>/delete", "POST", self.delete_vm)
@@ -144,8 +145,8 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
                 db.delete(token)
         elif self.require_token:
             self.report_403("Engine creation not possible without token")
-        if not db.libvirt_url:
-            db.libvirt_url = self._pick_libvirt_host()
+        if not vm.libvirt_url:
+            vm.libvirt_url = self._pick_libvirt_host()
         try:
             if token and not token.regenerates:
                 db.delete(token)
