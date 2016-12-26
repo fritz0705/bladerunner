@@ -133,10 +133,9 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
     @DatabaseMixin.with_database_session
     def create_vm(self, db):
         vm = database.VirtualMachine()
-        token = None
-        if self.request.forms.get("token"):
-            token = db.query(database.Token).filter(
-                    database.Token.token == self.request.forms["token"]).first()
+        token = db.query(database.Token).filter(
+                database.Token.token == self.request.forms["token"]).first()
+        if token:
             if token.vm_lifetime:
                 vm.expires_at = datetime.datetime.now() + datetime.timedelta(seconds=token.vm_lifetime)
             if token.libvirt_url:
