@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Create YoloCloud® Engine</h2>
+<form method="POST" href="/">
+	<dl>
+		<dt><label for="create_token">Token (optional)</label></dt>
+		<dd><input type="text" class="uuid_input" size="36" name="token" id="create_token" /></dd>
+
+		<dt><label for="create_preset">Preset</label></dt>
+		<dd><select name="preset" id="create_preset">
+			<option value="none">None</option>
+			<option value="windows2003">Windows Server 2003</option>
+			<option value="archlinux">ArchLinux</option>
+		</select></dd>
+	</dl>
+
+	<p>Please keep in mind: Your Engine may expire; the actual expiry date is
+	displayed after creation.</p>
+
+	<input type="submit" name="create" value="Create Engine" />
+</form>
+
+<p>If you need custom Engines, come to the Geheimorganisation assembly,
+located in Hall 4, and ask for YoloVPS or YoloCloud.</p>
+
+<h2>Manage YoloCloud® Engine</h2>
+<p>Enter your Engine UUID to manage your YoloCloud Engine.</p>
+
+<form method="GET" href="/" id="manage" >
+	<input type="text" class="uuid_input" size="36" name="uuid" id="manage_uuid" />
+	<input type="submit" name="manage" value="Continue to Management interface" />
+</form>
+{% endblock %}

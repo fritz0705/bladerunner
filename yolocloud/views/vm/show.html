@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Engine information</h2>
+<dl>
+	<dt>UUID</dt>
+	<dd>{{ vm.uuid }}<br />
+	Keep this secret!</dd>
+
+	<dt>Engine state</dt>
+	<dd>{{ vm_state }}</dd>
+
+	<dt>Memory (in MiB)</dt>
+	<dd>{{ vm_desc.memory }}</dd>
+	
+	<dt>vCPU count</dt>
+	<dd>{{ vm_desc.vcpus }} vCPU(s)</dd>
+
+	<dt>Expires at</dt>
+	<dd>{{ vm.expires_at }}<br />
+	To prevent expiry, come to the Geheimorganisation assembly in Hall 4.</dd>
+</dl>
+
+<h2>Engine actions</h2>
+<form method="POST" action="/{{ vm.uuid }}">
+	<select name="action">
+		<option value="start">Start</option>
+		<option value="reboot">Reboot</option>
+		<option value="reset">Reset</option>
+		<option value="shutdown">Shutdown</option>
+		<option value="force-shutdown">Force shutdown</option>
+	</select>
+	<input type="submit" name="apply" value="Execute" />
+</form>
+{% endblock %}
