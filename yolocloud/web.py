@@ -123,6 +123,7 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
         self.route("/<uuid>", "POST", self.update_vm)
         self.route("/<uuid>/delete", "POST", self.delete_vm)
         self.route("/<uuid>", "DELETE", self.delete_vm)
+        self.route("/stats", "GET", self.show_stats)
         self.route("/", "GET", self.index_page)
         self.route("/", "POST", self.create_vm)
 
@@ -204,6 +205,12 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
         if vm:
             self.enqueue("delete_vm", uuid=vm.uuid)
         bottle.redirect("/")
+
+    @DatabaseMixin.with_database_session
+    @Jinja2Mixin.with_jinja2_renderer("stats.html")
+    def show_stats(self, db=None):
+        vms = db.query(database.VirtualMachine).count()
+        return dict(vm_count=vms)
 
     def _pick_libvirt_host(self):
         return random.choice(self.vm_hosts)
