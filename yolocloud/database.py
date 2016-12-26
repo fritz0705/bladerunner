@@ -38,7 +38,7 @@ class VirtualMachine(Base):
 class Token(Base):
     __tablename__ = "tokens"
     token = Column(String(length=36),
-            default=uuid.uuid4,
+            default=lambda: str(uuid.uuid4),
             primary_key=True,
             nullable=False)
     expires_at = Column(DateTime)
