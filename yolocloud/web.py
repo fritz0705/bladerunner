@@ -121,6 +121,7 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
             "base": virt.BaseVMTemplate()
         }
         self.require_token = require_token
+        self.media_pool = "iso"
 
         self.route("/<uuid>", "GET", self.show_vm)
         self.route("/<uuid>", "POST", self.update_vm)
@@ -177,17 +178,23 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
         vir_conn = libvirt.open(vm.libvirt_url)
         vm_desc = None
         vm_info = None
+        medias = []
         try:
             vir_dom = vir_conn.lookupByUUIDString(vm.uuid)
             vm_info = vir_dom.info()
             vm_desc = virt.DomainDescription(vir_dom)
+
+            media_pool = vir_conn.storagePoolLookupByName(self.media_pool)
+            if media_pool:
+                medias = media_pool.listAllVolumes()
         finally:
             vir_conn.close()
         return dict(vm=vm,
             vm_desc=vm_desc,
             vm_state=virt.state_to_text_mapping.get(vm_info[0]),
             vm_info=vm_info,
-            vm_host=self.vm_hosts.get(vm.libvirt_url))
+            vm_host=self.vm_hosts.get(vm.libvirt_url),
+            medias=medias)
 
     @DatabaseMixin.with_database_session
     def update_vm(self, uuid, db=None):
@@ -205,7 +212,7 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
         elif action == "force-shutdown":
             self.destroy_vm(uuid=vm.uuid)
         elif action == "change_media":
-            self.change_media(uuid=vm.uuid, media_pool="iso", media_volume=self.request.forms.get("volume"))
+            self.change_media(uuid=vm.uuid, media_pool=self.media_pool, media_volume=self.request.forms.get("volume"))
         bottle.redirect("/{}".format(vm.uuid))
 
     @DatabaseMixin.with_database_session
