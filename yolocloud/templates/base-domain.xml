@@ -1,0 +1,33 @@
+<domain type="kvm">
+	<name>base-{{vm.uuid}}-vm</name>
+	<uuid>{{vm.uuid}}</uuid>
+	<memory unit="GiB">2</memory>
+	<vcpu>1</vcpu>
+
+	<os>
+		<type arch="x86_64">hvm</type>
+		<boot dev="cdrom" />
+		<boot dev="hd" />
+	</os>
+
+	<features>
+		<acpi />
+		<apic />
+	</features>
+
+	<devices>
+		<disk type="volume" device="disk">
+			<driver name="qemu" type="qcow2" />
+			<source pool="default" volume="{{ vm.uuid }}-volume" />
+			<target dev="sda" bus="scsi" />
+		</disk>
+
+		<disk type="volume" device="cdrom">
+			<driver name="qemu" type="qcow2" />
+			<target dev="sdb" bus="scsi" />
+			<readonly />
+		</disk>
+
+		<graphics type="spice" autoport="yes" listen="" password="{{ vm.management_password }}" />
+	</devices>
+</domain>

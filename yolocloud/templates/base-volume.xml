@@ -1,0 +1,7 @@
+<volume type="file">
+	<name>{{vm.uuid}}-volume</name>
+	<capacity unit="GiB">10</capacity>
+	<target>
+		<format type="qcow2" />
+	</target>
+</volume>

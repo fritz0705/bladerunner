@@ -26,8 +26,8 @@ def provision_vm(uuid, template=None):
         db.close()
         return
     vir_conn = libvirt.open(vm.libvirt_url)
-    volume_xml = render_template("{}-volume.xml".format(template))
-    domain_xml = render_template("{}-domain.xml".format(template))
+    volume_xml = render_template("{}-volume.xml".format(template), vm=vm)
+    domain_xml = render_template("{}-domain.xml".format(template), vm=vm)
     try:
         vir_conn.defineXML(domain_xml)
         default_pool = vir_conn.storagePoolLookupByName("default")
