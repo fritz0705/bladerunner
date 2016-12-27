@@ -113,12 +113,13 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
 
     require_token = False
 
-    def __init__(self, *args, vm_hosts=None, require_token=False, **kwargs):
+    def __init__(self, *args, vm_hosts=None, require_token=False, vm_templates=None, **kwargs):
         BaseApplication.__init__(self, *args, **kwargs)
         Jinja2Mixin.__init__(self, loader=jinja2.PackageLoader("yolocloud", "views/vm"))
         DatabaseMixin.__init__(self, *args, **kwargs)
         CeleryMixin.__init__(self, *args, **kwargs)
         self.vm_hosts = vm_hosts or {"qemu:///system": "::"}
+        self.vm_templates = set(vm_templates or { "base" })
         self.require_token = require_token
         self.route("/<uuid>", "GET", self.show_vm)
         self.route("/<uuid>", "POST", self.update_vm)

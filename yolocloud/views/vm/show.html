@@ -11,6 +11,9 @@
 	<dt>Engine state</dt>
 	<dd>{{ vm_state }}</dd>
 
+	<dt>IP Address</dt>
+	<dd>Use IPv6 and ask us for IPv4</dd>
+
 	<dt>Memory (in MiB)</dt>
 	<dd>{{vm_desc.memory}} MiB</dd>
 	
@@ -33,6 +36,17 @@
 	<dd>{{ vm_host }}</dd>
 	{% endif %}
 </dl>
+
+<h2>Remote access</h2>
+
+<p>Use the following URL to access your VM:
+{% if vm_host %}
+{% if vm_desc.vnc_port %}
+<pre>vnc://{{vm_host}}:{{vm_desc.vnc_port}}/</pre>
+{% elif vm_desc.spice_port %}
+<pre>spice://{{vm_host}}:{{vm_desc.vnc_port}}/</pre>
+{% endif %}
+{% endif %}
 
 <h2>Engine actions</h2>
 <form method="POST" action="/{{ vm.uuid }}">

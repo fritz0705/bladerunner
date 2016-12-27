@@ -42,6 +42,20 @@ class DomainDescription(object):
 
     def features(self):
         return (node.tag for node in self.xml.findall("./features/*"))
+    
+    @property
+    def vnc_port(self):
+        node = self.xml.find("./devices/graphics[@type='vnc']")
+        if not node:
+            return None
+        return int(node.get("port"))
+    
+    @property
+    def spice_port(self):
+        node = self.xml.find("./devices/graphics[@type='spice']")
+        if not node:
+            return None
+        return int(node.get("port"))
 
 state_to_text_mapping = {
     libvirt.VIR_DOMAIN_NOSTATE: "No state",
