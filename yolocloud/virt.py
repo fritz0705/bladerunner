@@ -77,7 +77,7 @@ class DomainDescription(object):
 
     @property
     def cdrom(self):
-        node = self.xml.find("./devices/disk[@type='cdrom']")
+        node = self.xml.find("./devices/disk[@device='cdrom']")
         if not node:
             return None
         node = node.find("./source")
@@ -88,7 +88,7 @@ class DomainDescription(object):
     @cdrom.setter
     def cdrom(self, new_medium):
         pool, vol = new_medium
-        disk_node = self.xml.find("./devices/disk[@type='cdrom']")
+        disk_node = self.xml.find("./devices/disk[@device='cdrom']")
         node = disk_node.find("./source")
         if not node:
             element = lxml.etree.SubElement(disk_node, "source")
@@ -100,13 +100,13 @@ class DomainDescription(object):
 
     @cdrom.deleter
     def cdrom(self):
-        node = self.xml.find("./devices/disk[@type='cdrom']/source")
+        node = self.xml.find("./devices/disk[@device='cdrom']/source")
         if node:
             node.getparent().remove(node)
     
     @property
     def has_cdrom(self):
-        return bool(self.xml.find("./devices/disk[@type='cdrom']"))
+        return bool(self.xml.find("./devices/disk[@device='cdrom']"))
 
     def dump(self):
         return lxml.etree.dump(self.xml)
