@@ -58,7 +58,7 @@
 	<input type="submit" name="apply" value="Execute" />
 </form>
 
-{% if vm.has_cdrom %}
+{% if vm_desc.has_cdrom %}
 <h2>Change media</h2>
 <form method="POST" action="/{{ vm.uuid }}">
 	<dl>
