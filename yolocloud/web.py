@@ -132,6 +132,7 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
     def index_page(self):
         if "manage" in self.request.query and self.request.query.get("uuid"):
             bottle.redirect("/{}".format(self.request.query["uuid"]))
+        return dict(vm_templates=self.vm_templates)
 
     @DatabaseMixin.with_database_session
     def create_vm(self, db):
