@@ -39,13 +39,10 @@
 
 <h2>Remote access</h2>
 
-<p>Use the following URL to access your VM:
-{% if vm_host %}
-{% if vm_desc.vnc_port %}
-<pre>vnc://[{{vm_host}}]:{{vm_desc.vnc_port}}/</pre>
-{% elif vm_desc.spice_port %}
-<pre>spice://[{{vm_host}}]:{{vm_desc.spice_port}}/</pre>
-{% endif %}
+{% set vm_management_uri = vm_desc.remote_management_uri(vm_host) %}
+{% if vm_management_uri %}
+<p>Use the following URL to access your VM graphical display:
+<pre>{{ vm_management_uri }}</pre>
 {% endif %}
 
 <h2>Engine actions</h2>

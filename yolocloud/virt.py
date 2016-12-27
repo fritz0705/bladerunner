@@ -56,9 +56,25 @@ class DomainDescription(object):
         if not node or not node.get("port"):
             return None
         return int(node.get("port"))
+    
+    def remote_management_uri(self, host=None):
+        url_scheme = None
+        port = None
+        if self.spice_port:
+            url_scheme = "spice"
+            port = self.spice_port
+        elif self.vnc_port:
+            url_scheme = "vnc"
+            port = self.vnc_port
+        if url_scheme is None:
+            return None
+        if ":" in host:
+            host = "[{}]".format(host)
+        return urllib.parse.urlunparse((url_scheme, "{}:{}".format(host, port),
+            "/", "", "", ""))
 
 state_to_text_mapping = {
-    libvirt.VIR_DOMAIN_NOSTATE: "No state",
+    libvirt.VIR_DOMAIN_NOSTATE: "No State",
     libvirt.VIR_DOMAIN_RUNNING: "Running",
     libvirt.VIR_DOMAIN_BLOCKED: "Blocked",
     libvirt.VIR_DOMAIN_PAUSED: "Paused",
