@@ -14,7 +14,7 @@ import yolocloud.virt as virt
 app = celery.Celery("yolocloud", broker="pyamqp://")
 engine = sqlalchemy.create_engine("sqlite:///yolocloud.db")
 Session = sqlalchemy.orm.sessionmaker(bind=engine)
-templates = { "base": virt.BaseVMTemplate() }
+vm_templates = { "base": virt.BaseVMTemplate() }
 
 jinja2_env = jinja2.Environment(loader=jinja2.PackageLoader("yolocloud", "templates"))
 
