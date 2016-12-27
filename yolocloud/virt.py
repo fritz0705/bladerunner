@@ -3,6 +3,7 @@
 import libvirt
 import lxml.etree
 import urllib.parse
+import jinja2
 
 class DomainDescription(object):
     _xml = None
