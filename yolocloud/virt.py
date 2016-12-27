@@ -2,6 +2,7 @@
 
 import libvirt
 import lxml.etree
+import urllib.parse
 
 class DomainDescription(object):
     _xml = None
