@@ -111,8 +111,6 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
     destroy_vm = CeleryMixin.task("yolocloud.tasks.destroy_vm")
     change_media = CeleryMixin.task("yolocloud.tasks.change_media")
 
-    require_token = False
-
     def __init__(self, *args, vm_hosts=None, require_token=False, vm_templates=None, **kwargs):
         BaseApplication.__init__(self, *args, **kwargs)
         Jinja2Mixin.__init__(self, loader=jinja2.PackageLoader("yolocloud", "views/vm"))
@@ -121,6 +119,7 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
         self.vm_hosts = vm_hosts or {"qemu:///system": "::"}
         self.vm_templates = set(vm_templates or { "base" })
         self.require_token = require_token
+
         self.route("/<uuid>", "GET", self.show_vm)
         self.route("/<uuid>", "POST", self.update_vm)
         self.route("/<uuid>/delete", "POST", self.delete_vm)
