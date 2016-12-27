@@ -82,7 +82,7 @@ class VirtualMachineTemplate(object):
         self.jinja2_env = jinja2.Environment(loader=loader)
 
     def render_template(self, name, *args, **kwargs):
-        return self.jinja2_env.get_template(name).render_template(*args, **kwargs)
+        return self.jinja2_env.get_template(name).render(*args, **kwargs)
 
     def provision(self, vm, vir_conn):
         pass
