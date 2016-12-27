@@ -9,8 +9,9 @@
 
 		<dt><label for="create_template">Template</label></dt>
 		<dd><select name="template" id="create_template">
-			<option value="bare">Barebone system (2GB RAM, 1 CPU, 10GB HDD)</option>
-			<option value="windows2003">Windows Server 2003</option>
+			{% for key, tpl in vm_templates.iteritems() %}
+			<option value="{{key}}">{{ tpl|str }}</option>
+			{% endfor %}
 		</select></dd>
 	</dl>
 
