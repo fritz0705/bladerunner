@@ -48,8 +48,8 @@ state_to_text_mapping = {
     libvirt.VIR_DOMAIN_RUNNING: "Running",
     libvirt.VIR_DOMAIN_BLOCKED: "Blocked",
     libvirt.VIR_DOMAIN_PAUSED: "Paused",
-    libvirt.VIR_DOMAIN_SHUTDOWN: "Shut down",
-    libvirt.VIR_DOMAIN_SHUTOFF: "Shut off",
+    libvirt.VIR_DOMAIN_SHUTDOWN: "Shutting down",
+    libvirt.VIR_DOMAIN_SHUTOFF: "Shutdown",
     libvirt.VIR_DOMAIN_CRASHED: "Crashed",
     libvirt.VIR_DOMAIN_PMSUSPENDED: "Suspended by power management"
 }
