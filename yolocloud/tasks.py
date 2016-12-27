@@ -146,6 +146,6 @@ def change_media(uuid, media_volume, media_pool="iso"):
             del dom_desc.cdrom
         vir_dom.updateDeviceFlags(dom_desc.dump(), libvirt.VIR_DOMAIN_AFFECT_LIVE)
     finally:
-        vir_con.close()
+        vir_conn.close()
         db.close()
 
