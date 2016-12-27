@@ -85,7 +85,7 @@ class DomainDescription(object):
             return None
         return (node.get("pool"), node.get("volume"))
 
-    @property.setter
+    @cdrom.setter
     def cdrom(self, new_medium):
         pool, vol = new_medium
         disk_node = self.xml.find("./devices/disk[@type='cdrom']")
@@ -98,7 +98,7 @@ class DomainDescription(object):
         node.set("pool", pool)
         node.set("volume", vol)
 
-    @property.deleter
+    @cdrom.deleter
     def cdrom(self):
         node = self.xml.find("./devices/disk[@type='cdrom']/source")
         if node:
