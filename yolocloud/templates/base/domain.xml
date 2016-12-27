@@ -37,7 +37,7 @@
 		</interface>
 		{% endif %}
 
-		<graphics type="spice" autoport="yes" listen="::" password="{{ vm.management_password }}" />
+		<graphics type="spice" autoport="yes" listen="::" passwd="{{ vm.management_password }}" />
 	</devices>
 </domain>
 
