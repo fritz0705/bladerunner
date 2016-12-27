@@ -46,14 +46,14 @@ class DomainDescription(object):
     @property
     def vnc_port(self):
         node = self.xml.find("./devices/graphics[@type='vnc']")
-        if not node:
+        if not node or not node.get("port"):
             return None
         return int(node.get("port"))
     
     @property
     def spice_port(self):
         node = self.xml.find("./devices/graphics[@type='spice']")
-        if not node:
+        if not node or not node.get("port"):
             return None
         return int(node.get("port"))
 
