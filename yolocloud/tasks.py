@@ -7,6 +7,7 @@ import libvirt
 import sqlalchemy
 import sqlalchemy.orm
 import jinja2
+import lxml.etree
 
 import yolocloud.database as database
 import yolocloud.virt as virt
@@ -144,7 +145,8 @@ def change_media(uuid, media_volume, media_pool="iso"):
             dom_desc.cdrom = (media_pool, media_volume)
         else:
             del dom_desc.cdrom
-        vir_dom.updateDeviceFlags(dom_desc.dump(), flags=libvirt.VIR_DOMAIN_AFFECT_LIVE)
+        vir_dom.updateDeviceFlags(lxml.etree.tostring(dom_desc.cdrom_node),
+                flags=libvirt.VIR_DOMAIN_AFFECT_LIVE)
     finally:
         vir_conn.close()
         db.close()

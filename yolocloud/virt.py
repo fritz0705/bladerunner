@@ -108,6 +108,10 @@ class DomainDescription(object):
     def has_cdrom(self):
         return self.xml.find("./devices/disk[@device='cdrom']") is not None
 
+    @property
+    def cdrom_node(self):
+        return self.xml.find("./devices/disk[@device='cdrom']")
+
     def dump(self):
         return lxml.etree.dump(self.xml)
 
