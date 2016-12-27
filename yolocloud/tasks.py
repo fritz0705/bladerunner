@@ -145,7 +145,7 @@ def change_media(uuid, media_volume, media_pool="iso"):
             dom_desc.cdrom = (media_pool, media_volume)
         else:
             del dom_desc.cdrom
-        vir_dom.updateDeviceFlags(lxml.etree.tostring(dom_desc.cdrom_node),
+        vir_dom.updateDeviceFlags(lxml.etree.tostring(dom_desc.cdrom_node).decode(),
                 flags=libvirt.VIR_DOMAIN_AFFECT_LIVE)
     finally:
         vir_conn.close()
