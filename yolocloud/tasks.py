@@ -38,7 +38,7 @@ def provision_vm(uuid, template, config={}):
     vir_conn = libvirt.open(vm.libvirt_url)
     tpl = vm_templates[template]
     try:
-        tpl.provision(self, vm, vir_conn)
+        tpl.provision(vm, vir_conn)
     finally:
         vir_conn.close()
     try:
