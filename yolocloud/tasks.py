@@ -12,7 +12,7 @@ engine = sqlalchemy.create_engine("sqlite:///yolocloud.db")
 Session = sqlalchemy.orm.sessionmaker(bind=engine)
 
 @app.task
-def provision_vm(uuid):
+def provision_vm(uuid, template=None):
     db = Session()
     vm = db.query(database.VirtualMachine).filter(
             database.VirtualMachine.uuid == uuid).first()
@@ -101,5 +101,20 @@ def destroy_vm(uuid):
         vir_dom.destroy()
     finally:
         vir_conn.close()
+        db.close()
+
+@app.task
+def change_media(uuid, media_volume, media_pool="iso"):
+    db = Session()
+    vm = db.query(database.VirtualMachine).filter(
+            database.VirtualMachine.uuid == uuid).first()
+    if not vm:
+        db.close()
+        return
+    vir_conn = libvirt.open(vm.libvirt_url)
+    try:
+        vir_dom = vir_conn.lookupByUUIDString(vm.uuid)
+    finally:
+        vir_con.close()
         db.close()
 

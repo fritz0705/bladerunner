@@ -7,11 +7,10 @@
 		<dt><label for="create_token">Token (optional)</label></dt>
 		<dd><input type="text" class="uuid_input" size="36" name="token" id="create_token" /></dd>
 
-		<dt><label for="create_preset">Preset</label></dt>
-		<dd><select name="preset" id="create_preset">
-			<option value="none">None</option>
+		<dt><label for="create_template">Template</label></dt>
+		<dd><select name="template" id="create_template">
+			<option value="bare">Barebone system (2GB RAM, 1 CPU, 10GB HDD)</option>
 			<option value="windows2003">Windows Server 2003</option>
-			<option value="archlinux">ArchLinux</option>
 		</select></dd>
 	</dl>
 
@@ -21,11 +20,11 @@
 	<input type="submit" name="create" value="Create Engine" />
 </form>
 
-<p>If you need custom Engines, come to the Geheimorganisation assembly,
+<p>If you need custom engines, come to the Geheimorganisation assembly,
 located in Hall 4, and ask for YoloVPS or YoloCloud.</p>
 
 <h2>Manage YoloCloud® Engine</h2>
-<p>Enter your Engine UUID to manage your YoloCloud Engine.</p>
+<p>Enter your engine UUID to manage your YoloCloud Engine.</p>
 
 <form method="GET" href="/" id="manage" >
 	<input type="text" class="uuid_input" size="36" name="uuid" id="manage_uuid" />

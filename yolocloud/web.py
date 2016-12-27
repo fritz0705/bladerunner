@@ -109,6 +109,7 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
     start_vm = CeleryMixin.task("yolocloud.tasks.start_vm")
     reset_vm = CeleryMixin.task("yolocloud.tasks.reset_vm")
     destroy_vm = CeleryMixin.task("yolocloud.tasks.destroy_vm")
+    change_media = CeleryMixin.task("yolocloud.tasks.change_media")
 
     require_token = False
 
@@ -117,7 +118,7 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
         Jinja2Mixin.__init__(self, loader=jinja2.PackageLoader("yolocloud", "views/vm"))
         DatabaseMixin.__init__(self, *args, **kwargs)
         CeleryMixin.__init__(self, *args, **kwargs)
-        self.vm_hosts = vm_hosts or ["qemu:///system"]
+        self.vm_hosts = vm_hosts or {"qemu:///system": "::"}
         self.require_token = require_token
         self.route("/<uuid>", "GET", self.show_vm)
         self.route("/<uuid>", "POST", self.update_vm)
@@ -155,7 +156,7 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
             db.commit()
         except:
             db.rollback()
-        self.provision_vm(uuid=vm.uuid, preset=self.request.forms.get("preset"))
+        self.provision_vm(uuid=vm.uuid, template=self.request.forms.get("template"))
         bottle.redirect("/{}".format(vm.uuid))
 
     @DatabaseMixin.with_database_session
@@ -179,7 +180,8 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
         return dict(vm=vm,
             vm_desc=vm_desc,
             vm_state=virt.state_to_text_mapping.get(vm_info[0]),
-            vm_info=vm_info)
+            vm_info=vm_info,
+            vm_host=self.vm_hosts.get(vm.libvirt_url))
 
     @DatabaseMixin.with_database_session
     def update_vm(self, uuid, db=None):
@@ -196,6 +198,8 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
             self.reset_vm(uuid=vm.uuid)
         elif action == "force-shutdown":
             self.destroy_vm(uuid=vm.uuid)
+        elif action == "change_media":
+            self.change_media(uuid=vm.uuid, media_pool="iso", media_volume=self.request.forms.get("volume"))
         bottle.redirect("/{}".format(vm.uuid))
 
     @DatabaseMixin.with_database_session
@@ -213,7 +217,7 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
         return dict(vm_count=vms)
 
     def _pick_libvirt_host(self):
-        return random.choice(self.vm_hosts)
+        return random.choice(self.vm_hosts.keys())
 
     @Jinja2Mixin.with_jinja2_renderer("404.html")
     def report_404(self, reason):

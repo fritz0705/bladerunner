@@ -2,28 +2,42 @@
 
 {% block content %}
 <h2>Engine information</h2>
+
 <dl>
-	<dt>UUID</dt>
-	<dd>{{ vm.uuid }}<br />
+	<dt>UUId</dt>
+	<dd><code>{{ vm.uuid }}</code><br />
 	Keep this secret!</dd>
 
 	<dt>Engine state</dt>
 	<dd>{{ vm_state }}</dd>
 
 	<dt>Memory (in MiB)</dt>
-	<dd>{{ vm_desc.memory }}</dd>
+	<dd>{{vm_desc.memory}} MiB</dd>
 	
-	<dt>vCPU count</dt>
-	<dd>{{ vm_desc.vcpus }} vCPU(s)</dd>
+	<dt>vCPUs</dt>
+	<dd>{{vm_desc.vcpus}} vCPU(s)</dd>
 
-	<dt>Expires at</dt>
-	<dd>{{ vm.expires_at }}<br />
-	To prevent expiry, come to the Geheimorganisation assembly in Hall 4.</dd>
+	<dt>Expiry date</dt>
+	<dd>{% if vm.expires_at %}
+	{{ vm.expires_at }}
+	{% else %}
+	Never
+	{% endif %}<br />
+	To prevent expiry come to the Geheimorganisation assembly in Hall 4.</dd>
+
+	<dt>Password</dt>
+	<dd><code>{{ vm.management_password }}</code></dd>
+
+	{% if vm_host %}
+	<dt>Host IP Address</dt>
+	<dd>{{ vm_host }}</dd>
+	{% endif %}
 </dl>
 
 <h2>Engine actions</h2>
 <form method="POST" action="/{{ vm.uuid }}">
-	<select name="action">
+	<label for="action">Action:</label>
+	<select name="action" id="action">
 		<option value="start">Start</option>
 		<option value="reboot">Reboot</option>
 		<option value="reset">Reset</option>
@@ -31,5 +45,15 @@
 		<option value="force-shutdown">Force shutdown</option>
 	</select>
 	<input type="submit" name="apply" value="Execute" />
+</form>
+
+<h2>Change media</h2>
+<form method="POST" action="/{{ vm.uuid }}">
+	<dl>
+		<dt>CDROM image</dt>
+		<dd><select name="image" id="image">
+		</select></dd>
+	</dl>
+	<input type="submit" name="apply" value="Change" />
 </form>
 {% endblock %}
