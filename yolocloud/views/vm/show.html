@@ -63,6 +63,7 @@
 	<dl>
 		<dt>CDROM image</dt>
 		<dd><select name="image" id="image">
+			<option value="">none</option>
 			{% for media in medias %}
 			<option value="{{ media.name() }}">{{ media.name() }}</option>
 			{% endfor %}

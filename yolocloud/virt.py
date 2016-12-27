@@ -75,6 +75,38 @@ class DomainDescription(object):
         return urllib.parse.urlunparse((url_scheme, "{}:{}".format(host, port),
             "/", "", "", ""))
 
+    @property
+    def cdrom(self):
+        node = self.xml.find("./devices/disk[@type='cdrom']")
+        if not node:
+            return None
+        node = node.find("./source")
+        if not node:
+            return None
+        return (node.get("pool"), node.get("volume"))
+
+    @property.setter
+    def cdrom(self, new_medium):
+        pool, vol = new_medium
+        disk_node = self.xml.find("./devices/disk[@type='cdrom']")
+        node = disk_node.find("./source")
+        if not node:
+            element = lxml.etree.SubElement(disk_node, "source")
+            element.set("pool", pool)
+            element.set("volume", vol)
+            return
+        node.set("pool", pool)
+        node.set("volume", vol)
+
+    @property.deleter
+    def cdrom(self):
+        node = self.xml.find("./devices/disk[@type='cdrom']/source")
+        if node:
+            node.getparent().remove(node)
+
+    def dump(self):
+        return lxml.etree.dump(self.xml)
+
 class VirtualMachineTemplate(object):
     def __init__(self, loader=None):
         if loader is None:

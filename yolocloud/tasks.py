@@ -139,6 +139,12 @@ def change_media(uuid, media_volume, media_pool="iso"):
     vir_conn = libvirt.open(vm.libvirt_url)
     try:
         vir_dom = vir_conn.lookupByUUIDString(vm.uuid)
+        dom_desc = virt.DomainDescription(vir_dom)
+        if media_volume:
+            dom_desc.cdrom = (media_pool, media_volume)
+        else:
+            del dom_desc.cdrom
+        vir_dom.updateDeviceFlags(dom_desc.dump(), libvirt.VIR_DOMAIN_AFFECT_LIVE)
     finally:
         vir_con.close()
         db.close()
