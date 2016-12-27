@@ -89,6 +89,7 @@ class VirtualMachineTemplate(object):
 class BaseVMTemplate(VirtualMachineTemplate):
     def __init__(self, memory=1024, hdd=1024*10, network_bridge="virbr1",
             network_type="e1000", with_network=True, with_cdrom=True, cpus=1):
+        VirtualMachineTemplate.__init__(self)
         self.memory = memory
         self.cpus = cpus
         self.hdd = hdd
