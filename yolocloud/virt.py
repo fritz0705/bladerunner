@@ -101,7 +101,7 @@ class DomainDescription(object):
     @cdrom.deleter
     def cdrom(self):
         node = self.xml.find("./devices/disk[@device='cdrom']/source")
-        if node:
+        if node is not None:
             node.getparent().remove(node)
     
     @property
