@@ -2,7 +2,7 @@
 
 {% block content %}
 <h2>Create YoloCloud® Engine</h2>
-<form method="POST" href="/">
+<form method="POST" action="/">
 	<dl>
 		<dt><label for="create_token">Token (optional)</label></dt>
 		<dd><input type="text" class="uuid_input" size="36" name="token" id="create_token" /></dd>
@@ -26,7 +26,7 @@ located in Hall 4, and ask for YoloVPS or YoloCloud.</p>
 <h2>Manage YoloCloud® Engine</h2>
 <p>Enter your engine UUID to manage your YoloCloud Engine.</p>
 
-<form method="GET" href="/" id="manage" >
+<form method="GET" action="/" id="manage" >
 	<input type="text" class="uuid_input" size="36" name="uuid" id="manage_uuid" />
 	<input type="submit" name="manage" value="Continue to Management interface" />
 </form>
