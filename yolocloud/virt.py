@@ -73,6 +73,46 @@ class DomainDescription(object):
         return urllib.parse.urlunparse((url_scheme, "{}:{}".format(host, port),
             "/", "", "", ""))
 
+class VirtualMachineTemplate(object):
+    def __init__(self, loader=None):
+        if loader is None:
+            loader = jinja2.PackageLoader("yolocloud", "templates")
+        self.jinja2_env = jinja2.Environment(loader=loader)
+
+    def render_template(self, name, *args, **kwargs):
+        return self.jinja2_env.get_template(name).render_template(*args, **kwargs)
+
+    def provision(self, vm, vir_conn):
+        pass
+
+class BaseVMTemplate(VirtualMachineTemplate):
+    def __init__(self, memory=1024, hdd=1024*10, network_bridge="virbr1",
+            network_type="e1000", with_network=True, with_cdrom=True, cpus=1):
+        self.memory = memory
+        self.cpus = cpus
+        self.hdd = hdd
+        self.network_bridge = network_bridge
+        self.network_type = network_type
+        self.with_network = with_network
+        self.with_cdrom = with_cdrom
+
+    def provision(self, vm, vir_conn):
+        domain_xml = self.render_template("base/domain.xml", memory=self.memory,
+                cpus=self.cpus, hdd=self.hdd, network_bridge=self.network_bridge,
+                network_type=self.network_type, with_network=self.with_network,
+                with_cdrom=self.with_cdrom, vm=vm)
+        volume_xml = self.render_template("base/volume.xml", memory=self.memory,
+                cpus=self.cpus, hdd=self.hdd, network_bridge=self.network_bridge,
+                network_type=self.network_type, with_network=self.with_network,
+                with_cdrom=self.with_cdrom, vm=vm)
+        vir_conn.defineXML(domain_xml)
+        default_pool = vir_conn.storagePoolLookupByName("default")
+        default_pool.createXML(volume_xml)
+    
+    def __str__(self):
+        return "Barebone image ({} MB RAM, {} GB HDD, {} CPUs)".format(
+                self.memory, self.hdd, self.cpus)
+
 state_to_text_mapping = {
     libvirt.VIR_DOMAIN_NOSTATE: "No State",
     libvirt.VIR_DOMAIN_RUNNING: "Running",

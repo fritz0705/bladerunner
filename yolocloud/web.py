@@ -117,7 +117,9 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
         DatabaseMixin.__init__(self, *args, **kwargs)
         CeleryMixin.__init__(self, *args, **kwargs)
         self.vm_hosts = vm_hosts or {"qemu:///system": "::"}
-        self.vm_templates = set(vm_templates or { "base" })
+        self.vm_templates = vm_templates or {
+            "base": virt.BaseVMTemplate()
+        }
         self.require_token = require_token
 
         self.route("/<uuid>", "GET", self.show_vm)
@@ -137,6 +139,9 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
     @DatabaseMixin.with_database_session
     def create_vm(self, db):
         vm = database.VirtualMachine()
+        template = self.request.forms["template"]
+        if template not in self.vm_templates:
+            return self.report_403("Forbidden template type")
         token = db.query(database.Token).filter(
                 database.Token.token == self.request.forms["token"]).first()
         if token:
@@ -157,7 +162,7 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
             db.commit()
         except:
             db.rollback()
-        self.provision_vm(uuid=vm.uuid, template=self.request.forms.get("template"))
+        self.provision_vm(uuid=vm.uuid, template=template)
         bottle.redirect("/{}".format(vm.uuid))
 
     @DatabaseMixin.with_database_session

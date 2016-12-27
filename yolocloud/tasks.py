@@ -9,10 +9,12 @@ import sqlalchemy.orm
 import jinja2
 
 import yolocloud.database as database
+import yolocloud.virt as virt
 
 app = celery.Celery("yolocloud", broker="pyamqp://")
 engine = sqlalchemy.create_engine("sqlite:///yolocloud.db")
 Session = sqlalchemy.orm.sessionmaker(bind=engine)
+templates = { "base": virt.BaseVMTemplate() }
 
 jinja2_env = jinja2.Environment(loader=jinja2.PackageLoader("yolocloud", "templates"))
 
@@ -26,7 +28,7 @@ def with_database_session(f):
     return wrapper
 
 @app.task
-def provision_vm(uuid, template=None):
+def provision_vm(uuid, template, config={}):
     db = Session()
     vm = db.query(database.VirtualMachine).filter(
             database.VirtualMachine.uuid == uuid).first()
@@ -34,18 +36,17 @@ def provision_vm(uuid, template=None):
         db.close()
         return
     vir_conn = libvirt.open(vm.libvirt_url)
-    volume_xml = render_template("{}-volume.xml".format(template), vm=vm)
-    domain_xml = render_template("{}-domain.xml".format(template), vm=vm)
+    tpl = vm_templates[template]
     try:
-        vir_conn.defineXML(domain_xml)
-        default_pool = vir_conn.storagePoolLookupByName("default")
-        default_pool.createXML(volume_xml)
+        tpl.provision(self, vm, vir_conn)
+    finally:
+        vir_conn.close()
+    try:
         vm.provisioned = True
         db.add(vm)
         db.commit()
     finally:
-        vir_conn.close()
-    db.close()
+        db.close()
 
 @app.task
 def shutdown_vm(uuid):

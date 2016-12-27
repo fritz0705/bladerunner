@@ -1,0 +1,8 @@
+<volume type="file">
+	<name>base-{{vm.uuid}}-volume</name>
+	<capacity unit="MiB">{{ hdd }}</capacity>
+	<target>
+		<format type="qcow2" />
+	</target>
+</volume>
+
