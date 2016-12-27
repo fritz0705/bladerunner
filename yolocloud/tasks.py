@@ -4,7 +4,7 @@ import celery
 import libvirt
 import sqlalchemy
 import sqlalchemy.orm
-import jinja2_env
+import jinja2
 
 import yolocloud.database as database
 
