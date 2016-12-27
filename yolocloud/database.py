@@ -18,7 +18,7 @@ def generate_password(length=12, characters=None):
 class VirtualMachine(Base):
     __tablename__ = "virtual_machines"
     uuid = Column(String(length=36),
-            default=uuid.uuid4,
+            default=lambda: str(uuid.uuid4()),
             primary_key=True,
             nullable=False)
     created_at = Column(DateTime,
@@ -38,7 +38,7 @@ class VirtualMachine(Base):
 class Token(Base):
     __tablename__ = "tokens"
     token = Column(String(length=36),
-            default=lambda: str(uuid.uuid4),
+            default=lambda: str(uuid.uuid4()),
             primary_key=True,
             nullable=False)
     expires_at = Column(DateTime)
