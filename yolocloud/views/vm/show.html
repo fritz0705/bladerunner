@@ -44,7 +44,7 @@
 {% if vm_desc.vnc_port %}
 <pre>vnc://{{vm_host}}:{{vm_desc.vnc_port}}/</pre>
 {% elif vm_desc.spice_port %}
-<pre>spice://{{vm_host}}:{{vm_desc.vnc_port}}/</pre>
+<pre>spice://{{vm_host}}:{{vm_desc.spice_port}}/</pre>
 {% endif %}
 {% endif %}
 
