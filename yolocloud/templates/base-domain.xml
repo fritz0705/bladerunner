@@ -28,6 +28,11 @@
 			<readonly />
 		</disk>
 
+		<interface type="bridge">
+			<source bridge="virbr1" />
+			<model type="e1000" />
+		</interface>
+
 		<graphics type="spice" autoport="yes" listen="" password="{{ vm.management_password }}" />
 	</devices>
 </domain>
