@@ -9,7 +9,7 @@
 
 		<dt><label for="create_template">Template</label></dt>
 		<dd><select name="template" id="create_template">
-			{% for key, tpl in vm_templates.iteritems() %}
+			{% for key, tpl in vm_templates.items() %}
 			<option value="{{key}}">{{ tpl }}</option>
 			{% endfor %}
 		</select></dd>
