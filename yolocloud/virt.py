@@ -103,6 +103,10 @@ class DomainDescription(object):
         node = self.xml.find("./devices/disk[@type='cdrom']/source")
         if node:
             node.getparent().remove(node)
+    
+    @property
+    def has_cdrom(self):
+        return bool(self.xml.find("./devices/disk[@type='cdrom']"))
 
     def dump(self):
         return lxml.etree.dump(self.xml)

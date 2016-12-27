@@ -58,6 +58,7 @@
 	<input type="submit" name="apply" value="Execute" />
 </form>
 
+{% if vm.has_cdrom %}
 <h2>Change media</h2>
 <form method="POST" action="/{{ vm.uuid }}">
 	<dl>
@@ -71,4 +72,5 @@
 	</dl>
 	<input type="submit" name="apply" value="Change" />
 </form>
+{% endif %}
 {% endblock %}
