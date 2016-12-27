@@ -1,5 +1,7 @@
 # coding: utf-8
 
+import functools
+
 import celery
 import libvirt
 import sqlalchemy
@@ -16,6 +18,12 @@ jinja2_env = jinja2.Environment(loader=jinja2.PackageLoader("yolocloud", "templa
 
 def render_template(name, **kwargs):
     return jinja2_env.get_template(name).render(**kwargs)
+
+def with_database_session(f):
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        pass
+    return wrapper
 
 @app.task
 def provision_vm(uuid, template=None):
