@@ -4,12 +4,18 @@ import celery
 import libvirt
 import sqlalchemy
 import sqlalchemy.orm
+import jinja2_env
 
 import yolocloud.database as database
 
 app = celery.Celery("yolocloud", broker="pyamqp://")
 engine = sqlalchemy.create_engine("sqlite:///yolocloud.db")
 Session = sqlalchemy.orm.sessionmaker(bind=engine)
+
+jinja2_env = jinja2.Environment(loader=jinja2.PackageLoader("yolocloud", "templates"))
+
+def render_template(name, **kwargs):
+    return jinja2_env.get_template(name).render(**kwargs)
 
 @app.task
 def provision_vm(uuid, template=None):
@@ -19,8 +25,18 @@ def provision_vm(uuid, template=None):
     if not vm:
         db.close()
         return
-    # Generate volume.xml
-    # Generate domain.xml
+    vir_conn = libvirt.open(vm.libvirt_url)
+    volume_xml = render_template("{}-volume.xml".format(template))
+    domain_xml = render_template("{}-domain.xml".format(template))
+    try:
+        vir_conn.defineXML(domain_xml)
+        default_pool = vir_conn.storagePoolLookupByName("default")
+        default_pool.createXML(volume_xml)
+        vm.provisioned = True
+        db.add(vm)
+        db.commit()
+    finally:
+        vir_conn.close()
     db.close()
 
 @app.task
