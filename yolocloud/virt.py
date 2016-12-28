@@ -98,8 +98,8 @@ class DomainDescription(object):
             element.set("volume", vol)
             return
         else:
-            node.set("pool", pool)
-            node.set("volume", vol)
+            src_node.set("pool", pool)
+            src_node.set("volume", vol)
         target_node = n.find("./target")
         if target_node:
             target_node.set("tray", "closed")
