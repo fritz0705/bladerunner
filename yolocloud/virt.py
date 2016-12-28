@@ -48,14 +48,14 @@ class DomainDescription(object):
     @property
     def vnc_port(self):
         node = self.xml.find("./devices/graphics[@type='vnc']")
-        if not node or not node.get("port"):
+        if node is None or not node.get("port"):
             return None
         return int(node.get("port"))
     
     @property
     def spice_port(self):
         node = self.xml.find("./devices/graphics[@type='spice']")
-        if not node or not node.get("port"):
+        if node is None or not node.get("port"):
             return None
         return int(node.get("port"))
     
@@ -78,10 +78,10 @@ class DomainDescription(object):
     @property
     def cdrom(self):
         node = self.xml.find("./devices/disk[@device='cdrom']")
-        if not node:
+        if node is None:
             return None
         node = node.find("./source")
-        if not node:
+        if node is None:
             return None
         return (node.get("pool"), node.get("volume"))
 
@@ -101,7 +101,7 @@ class DomainDescription(object):
             src_node.set("pool", pool)
             src_node.set("volume", vol)
         target_node = n.find("./target")
-        if target_node:
+        if target_node is not None:
             target_node.set("tray", "closed")
 
     @cdrom.deleter
