@@ -212,7 +212,7 @@ class VMController(BaseApplication, Jinja2Mixin, DatabaseMixin, CeleryMixin):
         elif action == "force-shutdown":
             self.destroy_vm(uuid=vm.uuid)
         elif action == "change_media":
-            self.change_media(uuid=vm.uuid, media_pool=self.media_pool, media_volume=self.request.forms.get("volume"))
+            self.change_media(uuid=vm.uuid, media_pool=self.media_pool, media_volume=self.request.forms.get("image"))
         bottle.redirect("/{}".format(vm.uuid))
 
     @DatabaseMixin.with_database_session
