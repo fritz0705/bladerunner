@@ -18,6 +18,7 @@ def main_create_token(args):
             regenerates=args.regenerate, vm_lifetime=args.vm_lifetime)
     session.add(token)
     session.commit()
+    print(token.token)
 
 def main_create_domain(args):
     session = Session()
