@@ -90,14 +90,17 @@ class DomainDescription(object):
         pool, vol = new_medium
         n = self.cdrom_node
         src_node = n.find("./source")
-        if not node:
-            element = lxml.etree.SubElement(disk_node, "source")
+        if not src_node:
+            element = lxml.etree.SubElement(n, "source")
             element.set("pool", pool)
             element.set("volume", vol)
             return
-        node.set("pool", pool)
-        node.set("volume", vol)
-        n.find("target").set("tray", "closed")
+        else:
+            node.set("pool", pool)
+            node.set("volume", vol)
+        target_node = n.find("./target")
+        if target_node:
+            target_node.set("tray", "closed")
 
     @cdrom.deleter
     def cdrom(self):
