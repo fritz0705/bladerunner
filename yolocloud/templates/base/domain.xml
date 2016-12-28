@@ -24,8 +24,8 @@
 
 		{% if with_cdrom %}
 		<disk type="volume" device="cdrom">
-			<driver name="qemu" type="qcow2" />
-			<target dev="sdb" bus="scsi" />
+			<driver name="qemu" type="raw" />
+			<target dev="sdb" bus="scsi" tray="open" />
 			<readonly />
 		</disk>
 		{% endif %}
